@@ -1,0 +1,36 @@
+
+on post-fs-data
+    start logd
+    chmod 0755 /vendor/etc/init/ksigam/magisk64
+    chmod 0755 /vendor/etc/init/ksigam/magiskpolicy
+    exec u:r:su:s0 root root -- /vendor/etc/init/ksigam/magisk64 --auto-selinux --setup-sbin /vendor/etc/init/ksigam
+    exec u:r:su:s0 root root -- /vendor/etc/init/ksigam/magiskpolicy --live --magisk "allow * magisk_file lnk_file *"
+    mkdir /sbin/.magisk 700
+    mkdir /sbin/.magisk/mirror 700
+    mkdir /sbin/.magisk/block 700
+    rm /dev/.magisk_unblock
+    start 7zKkuZ1ZhD
+    wait /dev/.magisk_unblock 40
+    rm /dev/.magisk_unblock
+
+service 7zKkuZ1ZhD /sbin/magisk --auto-selinux --post-fs-data
+    user root
+    seclabel u:r:su:s0
+    oneshot
+
+service wHgGlkRCtMoIQw /sbin/magisk --auto-selinux --service
+    class late_start
+    user root
+    seclabel u:r:su:s0
+    oneshot
+
+on property:sys.boot_completed=1
+    mkdir /data/adb/magisk 755
+    exec u:r:su:s0 root root -- /sbin/magisk --auto-selinux --boot-complete
+    exec -- /system/bin/sh -c "if [ ! -e /data/data/io.github.huskydg.magisk ] ; then pm install /vendor/etc/init/ksigam/ksigam.apk ; fi"
+
+on property:init.svc.zygote=restarting
+    exec u:r:su:s0 root root -- /sbin/magisk --auto-selinux --zygote-restart
+
+on property:init.svc.zygote=stopped
+    exec u:r:su:s0 root root -- /sbin/magisk --auto-selinux --zygote-restart
