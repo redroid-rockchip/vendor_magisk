@@ -12,8 +12,8 @@ def main():
     apk_path = os.path.join(current_path, "magisk.apk")
     unzip_path = os.path.join(current_path, "temp")
     overlay_path = os.path.join(current_path, "rootfs")
-    overlay_magisk_path = os.path.join(overlay_path, "vendor", "etc", "init", "ksigam")
-    overlay_init_path = os.path.join(overlay_path, "vendor", "etc", "init", "ksigam.rc")
+    overlay_magisk_path = os.path.join(overlay_path, "vendor", "etc", "init", "magisk")
+    overlay_init_path = os.path.join(overlay_path, "vendor", "etc", "init", "magisk.rc")
 
     shutil.rmtree(unzip_path, ignore_errors=True)
     os.makedirs(unzip_path, exist_ok=True)
